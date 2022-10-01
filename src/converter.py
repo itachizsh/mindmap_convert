@@ -3,7 +3,7 @@ import numpy as np
 from tkinter import N, messagebox
 import traceback
 import copy
-from utils import conf
+from config import conf
 import os
 
 

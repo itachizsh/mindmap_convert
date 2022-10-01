@@ -5,8 +5,7 @@ from tkinter import messagebox
 from components.ChooseFolderComponent import ChooseFolderComponent
 from components.SettingComponent import SettingComponent
 from converter import convert
-from utils import conf
-import os
+from config import conf
 
 
 class App:
