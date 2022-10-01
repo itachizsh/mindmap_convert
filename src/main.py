@@ -2,10 +2,13 @@ import tkinter as tk
 import tkinter.font as tkFont
 from components.ChooseFolderComponent import ChooseFolderComponent
 from components.SettingComponent import SettingComponent
+from utils import load_config
+import os
 
 
 class App:
-    def __init__(self, root):
+    def __init__(self, root, conf):
+        setting_conf = conf["ui"]["settings"]
         # setting title
         root.title("Mindmap converter")
         # setting window size
@@ -22,7 +25,7 @@ class App:
 
         # Upload file
         upload_path_component = ChooseFolderComponent(
-            root, label_text="Upload file", button_text="Choose file", y_pos=40)
+            root, label_text="Upload file", button_text="Choose", y_pos=40)
 
         # Download file destination
         output_path_component = ChooseFolderComponent(
@@ -38,15 +41,15 @@ class App:
         file_setting = SettingComponent(
             root=setting_frame,
             label_text="Cấu hình file - level",
-            default_idx=0,
-            options=[1, 2, 3, 4],
+            default_value=setting_conf["file"]["defaultValue"],
+            options=setting_conf["file"]["values"],
             x_pos=120, y_pos=30)
 
         sheet_setting = SettingComponent(
             root=setting_frame,
             label_text="Cấu hình sheet - level",
-            default_idx=0,
-            options=[1, 2, 3, 4],
+            default_value=setting_conf["sheet"]["defaultValue"],
+            options=setting_conf["sheet"]["values"],
             x_pos=120, y_pos=60)
         setting_frame.place(x=0, y=150, anchor="nw", width=width, height=110)
         setting_frame.pack_propagate(0)
@@ -62,46 +65,46 @@ class App:
         logic_setting = SettingComponent(
             root=sheet_setting_frame,
             label_text="Sheet kiểm tra luồng xử lý",
-            default_idx=0,
-            options=[1, 2, 3, 4],
+            default_value=setting_conf["sheet"]["logic"]["defaultValue"],
+            options=setting_conf["sheet"]["logic"]["values"],
             x_pos=120, y_pos=30)
 
         screen_setting = SettingComponent(
             root=sheet_setting_frame,
             label_text="Sheet kiểm tra màn hình",
-            default_idx=0,
-            options=[1, 2, 3, 4],
+            default_value=setting_conf["sheet"]["screen"]["defaultValue"],
+            options=setting_conf["sheet"]["screen"]["values"],
             x_pos=120, y_pos=60)
 
         sheet_authorization_setting = SettingComponent(
             root=sheet_setting_frame,
             label_text="Sheet kiểm tra phân quyền",
-            default_idx=0,
-            options=[1, 2, 3, 4],
+            default_value=setting_conf["sheet"]["authorization"]["defaultValue"],
+            options=setting_conf["sheet"]["authorization"]["values"],
             x_pos=120, y_pos=90)
         sheet_precondition_setting = SettingComponent(
             root=sheet_setting_frame,
             label_text="Sheet kiểm tra tiền điều kiện",
-            default_idx=0,
-            options=[1, 2, 3, 4],
+            default_value=setting_conf["sheet"]["precondition"]["defaultValue"],
+            options=setting_conf["sheet"]["precondition"]["values"],
             x_pos=120, y_pos=120)
         sheet_influence_setting = SettingComponent(
             root=sheet_setting_frame,
             label_text="Sheet kiểm tra ảnh hưởng",
-            default_idx=0,
-            options=[1, 2, 3, 4],
+            default_value=setting_conf["sheet"]["influence"]["defaultValue"],
+            options=setting_conf["sheet"]["influence"]["values"],
             x_pos=120, y_pos=150)
         sheet_outlier_setting = SettingComponent(
             root=sheet_setting_frame,
             label_text="Sheet kiểm tra màn hình",
-            default_idx=0,
-            options=[1, 2, 3, 4],
+            default_value=setting_conf["sheet"]["outlier"]["defaultValue"],
+            options=setting_conf["sheet"]["outlier"]["values"],
             x_pos=120, y_pos=180)
         sheet_other_setting = SettingComponent(
             root=sheet_setting_frame,
             label_text="Sheet khác",
-            default_idx=0,
-            options=[1, 2, 3, 4],
+            default_value=setting_conf["sheet"]["other"]["defaultValue"],
+            options=setting_conf["sheet"]["other"]["values"],
             x_pos=120, y_pos=210)
         sheet_setting_frame.place(
             x=0, y=270, anchor="nw", width=width, height=240)
@@ -121,5 +124,7 @@ class App:
 
 if __name__ == "__main__":
     root = tk.Tk()
-    app = App(root)
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    config = load_config(os.path.join(dir_path, "resources/config.yml"))
+    app = App(root, config)
     root.mainloop()

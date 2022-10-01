@@ -1,0 +1,29 @@
+ui:
+  settings:
+    file:
+      values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      defaultValue: 1
+    sheet:
+      values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      defaultValue: 2
+      logic:
+        values: [1, 2, 3, 4]
+        defaultValue: 1
+      screen:
+        values: [1, 2, 3, 4]
+        defaultValue: 3
+      authorization:
+        values: [1, 2, 3, 4]
+        defaultValue: 2
+      precondition:
+        values: [1, 2, 3, 4]
+        defaultValue: 2
+      influence:
+        values: [1, 2, 3, 4]
+        defaultValue: 3
+      outlier:
+        values: [1, 2, 3, 4]
+        defaultValue: 4
+      other:
+        values: [1, 2, 3, 4]
+        defaultValue: 3

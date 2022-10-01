@@ -3,7 +3,7 @@ import tkinter.font as tkFont
 
 
 class SettingComponent:
-    def __init__(self, root, label_text,  default_idx, options, x_pos=0, y_pos=0, width=350):
+    def __init__(self, root, label_text,  default_value, options, x_pos=0, y_pos=0, width=350):
         self.root = root
         ft = tkFont.Font(family='Times', size=10)
         frame = tk.Frame(root)
@@ -19,7 +19,7 @@ class SettingComponent:
 
         self.chosen_value = tk.StringVar()
         # initial menu text
-        self.chosen_value.set(options[default_idx])
+        self.chosen_value.set(default_value)
         dropdown = tk.OptionMenu(
             frame,
             self.chosen_value,
