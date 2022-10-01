@@ -17,12 +17,12 @@ class SettingComponent:
         label["text"] = label_text
         label.grid(sticky="w", column=0, row=0)
 
-        self.chosen_value = tk.StringVar()
+        self.value = tk.StringVar()
         # initial menu text
-        self.chosen_value.set(default_value)
+        self.value.set(default_value)
         dropdown = tk.OptionMenu(
             frame,
-            self.chosen_value,
+            self.value,
             *options)
         dropdown.config(width=5)
         dropdown.grid(sticky="e", column=1, row=0)

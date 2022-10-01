@@ -9,21 +9,27 @@ ui:
       logic:
         values: [1, 2, 3, 4]
         defaultValue: 1
+        name: Kiểm tra luồng xử lý
       screen:
         values: [1, 2, 3, 4]
         defaultValue: 3
+        name: Kiểm tra màn hình
       authorization:
         values: [1, 2, 3, 4]
         defaultValue: 2
+        name: Kiểm tra phân quyền
       precondition:
         values: [1, 2, 3, 4]
         defaultValue: 2
-      influence:
+        name: Kiểm tra tiền điều kiện
+      affection:
         values: [1, 2, 3, 4]
         defaultValue: 3
+        name: Kiểm tra ảnh hưởng
       outlier:
         values: [1, 2, 3, 4]
         defaultValue: 4
+        name: Kiểm tra ngoại lệ
       other:
         values: [1, 2, 3, 4]
         defaultValue: 3

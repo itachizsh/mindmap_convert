@@ -1,13 +1,16 @@
 import tkinter as tk
 import tkinter.font as tkFont
+from tkinter import messagebox
+
 from components.ChooseFolderComponent import ChooseFolderComponent
 from components.SettingComponent import SettingComponent
-from utils import load_config
+from converter import convert
+from utils import conf
 import os
 
 
 class App:
-    def __init__(self, root, conf):
+    def __init__(self, root):
         setting_conf = conf["ui"]["settings"]
         # setting title
         root.title("Mindmap converter")
@@ -24,12 +27,12 @@ class App:
         ft = tkFont.Font(family='Times', size=10)
 
         # Upload file
-        upload_path_component = ChooseFolderComponent(
-            root, label_text="Upload file", button_text="Choose", y_pos=40)
+        self.upload_path = ChooseFolderComponent(
+            root, component_type="excel", label_text="Upload file", button_text="Choose", y_pos=40)
 
         # Download file destination
-        output_path_component = ChooseFolderComponent(
-            root, label_text="Output folder", button_text="Choose", y_pos=90)
+        self.output_path = ChooseFolderComponent(
+            root, component_type="folder", label_text="Output folder", button_text="Choose", y_pos=90)
 
         # -------------------Settings--------------------
         setting_frame = tk.Frame(root)
@@ -38,14 +41,14 @@ class App:
         setting_label["text"] = "Cấu hình"
         setting_label.place(x=20, y=0, anchor="nw")
 
-        file_setting = SettingComponent(
+        self.file_setting = SettingComponent(
             root=setting_frame,
             label_text="Cấu hình file - level",
             default_value=setting_conf["file"]["defaultValue"],
             options=setting_conf["file"]["values"],
             x_pos=120, y_pos=30)
 
-        sheet_setting = SettingComponent(
+        self.sheet_setting = SettingComponent(
             root=setting_frame,
             label_text="Cấu hình sheet - level",
             default_value=setting_conf["sheet"]["defaultValue"],
@@ -62,45 +65,45 @@ class App:
         sheet_setting_label["text"] = "Cấu hình mức độ ưu tiên cho sheet"
         sheet_setting_label.place(x=20, y=0, anchor="nw")
 
-        logic_setting = SettingComponent(
+        self.sheet_logic_setting = SettingComponent(
             root=sheet_setting_frame,
             label_text="Sheet kiểm tra luồng xử lý",
             default_value=setting_conf["sheet"]["logic"]["defaultValue"],
             options=setting_conf["sheet"]["logic"]["values"],
             x_pos=120, y_pos=30)
 
-        screen_setting = SettingComponent(
+        self.sheet_screen_setting = SettingComponent(
             root=sheet_setting_frame,
             label_text="Sheet kiểm tra màn hình",
             default_value=setting_conf["sheet"]["screen"]["defaultValue"],
             options=setting_conf["sheet"]["screen"]["values"],
             x_pos=120, y_pos=60)
 
-        sheet_authorization_setting = SettingComponent(
+        self.sheet_authorization_setting = SettingComponent(
             root=sheet_setting_frame,
             label_text="Sheet kiểm tra phân quyền",
             default_value=setting_conf["sheet"]["authorization"]["defaultValue"],
             options=setting_conf["sheet"]["authorization"]["values"],
             x_pos=120, y_pos=90)
-        sheet_precondition_setting = SettingComponent(
+        self.sheet_precondition_setting = SettingComponent(
             root=sheet_setting_frame,
             label_text="Sheet kiểm tra tiền điều kiện",
             default_value=setting_conf["sheet"]["precondition"]["defaultValue"],
             options=setting_conf["sheet"]["precondition"]["values"],
             x_pos=120, y_pos=120)
-        sheet_influence_setting = SettingComponent(
+        self.sheet_affection_setting = SettingComponent(
             root=sheet_setting_frame,
             label_text="Sheet kiểm tra ảnh hưởng",
-            default_value=setting_conf["sheet"]["influence"]["defaultValue"],
-            options=setting_conf["sheet"]["influence"]["values"],
+            default_value=setting_conf["sheet"]["affection"]["defaultValue"],
+            options=setting_conf["sheet"]["affection"]["values"],
             x_pos=120, y_pos=150)
-        sheet_outlier_setting = SettingComponent(
+        self.sheet_outlier_setting = SettingComponent(
             root=sheet_setting_frame,
-            label_text="Sheet kiểm tra màn hình",
+            label_text="Sheet kiểm tra ngoại lệ",
             default_value=setting_conf["sheet"]["outlier"]["defaultValue"],
             options=setting_conf["sheet"]["outlier"]["values"],
             x_pos=120, y_pos=180)
-        sheet_other_setting = SettingComponent(
+        self.sheet_other_setting = SettingComponent(
             root=sheet_setting_frame,
             label_text="Sheet khác",
             default_value=setting_conf["sheet"]["other"]["defaultValue"],
@@ -119,12 +122,55 @@ class App:
                                  justify="center")
         start_button["text"] = "Start"
         start_button.place(x=215, y=560, width=70, height=30)
-        start_button["command"] = None
+        start_button["command"] = self.onStartClick
+
+    def onStartClick(self):
+        settings = self.getSettings()
+        if self.validateSettings(settings):
+            convert(settings)
+
+    def validateSettings(self, settings):
+        # Check in file
+        if len(settings["in_path"]) == 0:
+            messagebox.showerror("Validation error",
+                                 "Hãy chọn đường dẫn file upload")
+            return False
+        # Check out file
+        if len(settings["out_path"]) == 0:
+            messagebox.showerror("Validation error",
+                                 "Hãy chọn đường dẫn output folder")
+            return False
+        # Check file level < sheet level
+        if settings["file_level"] >= settings["sheet_level"]:
+            messagebox.showerror(
+                "Validation error", "Cấu hình file level phải nhỏ hơn sheet level")
+            return False
+        return True
+
+    def getSettings(self):
+        settings = {}
+        settings["in_path"] = self.upload_path.path
+        settings["out_path"] = self.output_path.path
+        settings["file_level"] = int(self.file_setting.value.get())
+        settings["sheet_level"] = int(self.sheet_setting.value.get())
+        settings["sheets"] = {}
+        settings["sheets"]["logic"] = int(self.sheet_logic_setting.value.get())
+        settings["sheets"]["screen"] = int(
+            self.sheet_screen_setting.value.get())
+        settings["sheets"]["authorization"] = int(
+            self.sheet_authorization_setting.value.get())
+        settings["sheets"]["precondition"] = int(
+            self.sheet_precondition_setting.value.get())
+        settings["sheets"]["affection"] = int(
+            self.sheet_affection_setting.value.get())
+        settings["sheets"]["outlier"] = int(
+            self.sheet_outlier_setting.value.get())
+        settings["sheets"]["other"] = int(self.sheet_other_setting.value.get())
+        return settings
 
 
 if __name__ == "__main__":
     root = tk.Tk()
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-    config = load_config(os.path.join(dir_path, "resources/config.yml"))
-    app = App(root, config)
+
+    app = App(root)
     root.mainloop()
