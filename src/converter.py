@@ -52,7 +52,7 @@ def processFile(rows, file_name, settings):
         entries.append(rows[i])
         if i == len(rows)-1 or rows[i][settings["sheet_level"]-1] != rows[i + 1][settings["sheet_level"]-1]:
             # Check same sheet name then create new name
-            name = rows[i][settings["sheet_level"]-1]
+            name = rows[i][settings["sheet_level"]-1][:31]
             if name in sheet_names.keys():
                 name = "{}-{}".format(name, sheet_names[name])
             sheet_names[name] = sheet_names.get(name, 0) + 1
@@ -91,7 +91,7 @@ def convert(settings):
             if prev_row:
                 # Check if file level not nan
                 if isinstance(cur_row[settings["file_level"]-1], str):
-                    name = prev_row[settings["file_level"]-1]
+                    name = prev_row[settings["file_level"]-1][:31]
                     if name in file_names.keys():
                         name = "{}-{}".format(name, file_names[name])
                     file_names[name] = file_names.get(name, 0) + 1
