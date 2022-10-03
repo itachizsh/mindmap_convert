@@ -77,10 +77,12 @@ def convert(settings):
         if len(df.columns) < 5:
             messagebox.showerror(
                 "Validation error", "Số cột của file nhỏ hơn 5 (cột file, cột sheet, tên case test, bước thực hiện, mong muốn)")
+            return False
+
         if len(df.columns) <= settings["sheet_level"]:
             messagebox.showerror(
                 "Validation error", "Số level của file nhỏ hơn sheet level config")
-            return
+            return False
         entries = []
 
         validIndexes = pd.DataFrame(df.T).apply(pd.Series.last_valid_index)
@@ -120,6 +122,8 @@ def convert(settings):
     except Exception as e:
         messagebox.showerror("Error", "{}\nStack trace:\n{}".format(
             str(e), traceback.format_exc()))
+        return False
+    return True
 
 
 if __name__ == "__main__":
