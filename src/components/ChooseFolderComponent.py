@@ -24,7 +24,7 @@ class ChooseFolderComponent:
         self.path_label["bg"] = "#ffffff"
         self.path_label["anchor"] = "w"
         self.path_label["text"] = path
-        self.path_label.place(x=x_pos + 100, y=y_pos, width=250, height=height)
+        self.path_label.place(x=x_pos + 100, y=y_pos, width=450, height=height)
 
         button = tk.Button(root)
         button["bg"] = "#f0f0f0"
@@ -32,7 +32,7 @@ class ChooseFolderComponent:
         button["fg"] = "#000000"
         button["justify"] = "center"
         button["text"] = button_text
-        button.place(x=x_pos + 380, y=y_pos, width=70, height=height)
+        button.place(x=x_pos + 560, y=y_pos, width=70, height=height)
         button["command"] = self.onButtonClick
 
     def onButtonClick(self):
@@ -41,5 +41,4 @@ class ChooseFolderComponent:
                 filetypes=[("Excel files", ".xlsx .xls")])
         else:
             self.path = askdirectory()
-        self.path_label.config(text = self.path)
-        
+        self.path_label.config(text=self.path)

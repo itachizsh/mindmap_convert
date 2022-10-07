@@ -4,6 +4,7 @@ from tkinter import messagebox
 
 from components.ChooseFolderComponent import ChooseFolderComponent
 from components.SettingComponent import SettingComponent
+from components.LevelSettingComponent import LevelSettingComponent
 from converter import convert
 from config import conf
 
@@ -14,7 +15,7 @@ class App:
         # setting title
         root.title("Mindmap converter")
         # setting window size
-        width = 500
+        width = 700
         height = 600
         screenwidth = root.winfo_screenwidth()
         screenheight = root.winfo_screenheight()
@@ -40,19 +41,19 @@ class App:
         setting_label["text"] = "Cấu hình"
         setting_label.place(x=20, y=0, anchor="nw")
 
-        self.file_setting = SettingComponent(
+        self.file_setting = LevelSettingComponent(
             root=setting_frame,
-            label_text="Cấu hình file - level",
+            label_text="Cấu hình file - chọn cột",
             default_value=setting_conf["file"]["defaultValue"],
             options=setting_conf["file"]["values"],
-            x_pos=120, y_pos=30)
+            x_pos=120, y_pos=30, width=400)
 
-        self.sheet_setting = SettingComponent(
+        self.sheet_setting = LevelSettingComponent(
             root=setting_frame,
-            label_text="Cấu hình sheet - level",
+            label_text="Cấu hình sheet - chọn cột",
             default_value=setting_conf["sheet"]["defaultValue"],
             options=setting_conf["sheet"]["values"],
-            x_pos=120, y_pos=60)
+            x_pos=120, y_pos=60, width=400)
         setting_frame.place(x=0, y=150, anchor="nw", width=width, height=110)
         setting_frame.pack_propagate(0)
 
@@ -64,50 +65,52 @@ class App:
         sheet_setting_label["text"] = "Cấu hình mức độ ưu tiên cho sheet"
         sheet_setting_label.place(x=20, y=0, anchor="nw")
 
+        self.genSheetHeader(sheet_setting_frame, x_pos=45, y_pos=30, width=600)
+
+        # ------------Data--------------
         self.sheet_logic_setting = SettingComponent(
             root=sheet_setting_frame,
             label_text="Sheet kiểm tra luồng xử lý",
-            default_value=setting_conf["sheet"]["logic"]["defaultValue"],
+            default_values=setting_conf["sheet"]["logic"]["defaultValues"],
             options=setting_conf["sheet"]["logic"]["values"],
-            x_pos=120, y_pos=30)
+            x_pos=45, y_pos=60, width=600)
 
         self.sheet_screen_setting = SettingComponent(
             root=sheet_setting_frame,
             label_text="Sheet kiểm tra màn hình",
-            default_value=setting_conf["sheet"]["screen"]["defaultValue"],
+            default_values=setting_conf["sheet"]["screen"]["defaultValues"],
             options=setting_conf["sheet"]["screen"]["values"],
-            x_pos=120, y_pos=60)
-
+            x_pos=45, y_pos=90, width=600)
         self.sheet_authorization_setting = SettingComponent(
             root=sheet_setting_frame,
             label_text="Sheet kiểm tra phân quyền",
-            default_value=setting_conf["sheet"]["authorization"]["defaultValue"],
+            default_values=setting_conf["sheet"]["authorization"]["defaultValues"],
             options=setting_conf["sheet"]["authorization"]["values"],
-            x_pos=120, y_pos=90)
+            x_pos=45, y_pos=120, width=600)
         self.sheet_precondition_setting = SettingComponent(
             root=sheet_setting_frame,
             label_text="Sheet kiểm tra tiền điều kiện",
-            default_value=setting_conf["sheet"]["precondition"]["defaultValue"],
+            default_values=setting_conf["sheet"]["precondition"]["defaultValues"],
             options=setting_conf["sheet"]["precondition"]["values"],
-            x_pos=120, y_pos=120)
+            x_pos=45, y_pos=150, width=600)
         self.sheet_affection_setting = SettingComponent(
             root=sheet_setting_frame,
             label_text="Sheet kiểm tra ảnh hưởng",
-            default_value=setting_conf["sheet"]["affection"]["defaultValue"],
+            default_values=setting_conf["sheet"]["affection"]["defaultValues"],
             options=setting_conf["sheet"]["affection"]["values"],
-            x_pos=120, y_pos=150)
+            x_pos=45, y_pos=180, width=600)
         self.sheet_outlier_setting = SettingComponent(
             root=sheet_setting_frame,
             label_text="Sheet kiểm tra ngoại lệ",
-            default_value=setting_conf["sheet"]["outlier"]["defaultValue"],
+            default_values=setting_conf["sheet"]["outlier"]["defaultValues"],
             options=setting_conf["sheet"]["outlier"]["values"],
-            x_pos=120, y_pos=180)
+            x_pos=45, y_pos=210, width=600)
         self.sheet_other_setting = SettingComponent(
             root=sheet_setting_frame,
             label_text="Sheet khác",
-            default_value=setting_conf["sheet"]["other"]["defaultValue"],
+            default_values=setting_conf["sheet"]["other"]["defaultValues"],
             options=setting_conf["sheet"]["other"]["values"],
-            x_pos=120, y_pos=210)
+            x_pos=45, y_pos=240, width=600)
         sheet_setting_frame.place(
             x=0, y=270, anchor="nw", width=width, height=240)
         sheet_setting_frame.pack_propagate(0)
@@ -120,8 +123,42 @@ class App:
                                  fg="#000000",
                                  justify="center")
         start_button["text"] = "Start"
-        start_button.place(x=215, y=560, width=70, height=30)
+        start_button.place(x=315, y=560, width=70, height=30)
         start_button["command"] = self.onStartClick
+
+    def genSheetHeader(self, root, x_pos=0, y_pos=0, width=350):
+        frame = tk.Frame(root)
+        frame.grid_columnconfigure(0, weight=1)
+        frame.grid_columnconfigure(1, weight=1)
+        frame.grid_columnconfigure(2, weight=1)
+        frame.grid_columnconfigure(3, weight=1)
+
+        label = tk.Label(frame, font='Times 10 bold', width=22)
+        label["fg"] = "#333333"
+        label["anchor"] = "w"
+        label["text"] = "Cấu hình theo sheet"
+        label.grid(sticky="w", column=0, row=0)
+
+        label = tk.Label(frame, font='Times 10 bold', width=15)
+        label["fg"] = "#333333"
+        label["anchor"] = "center"
+        label["text"] = "Kịch bản trọng yếu"
+        label.grid(sticky="we", column=1, row=0)
+
+        label = tk.Label(frame, font='Times 10 bold', width=15)
+        label["fg"] = "#333333"
+        label["anchor"] = "center"
+        label["text"] = "Loại test case"
+        label.grid(sticky="we", column=2, row=0)
+
+        label = tk.Label(frame, font='Times 10 bold', width=15)
+        label["fg"] = "#333333"
+        label["anchor"] = "center"
+        label["text"] = "Mức độ ưu tiên"
+        label.grid(sticky="we", column=3, row=0)
+
+        frame.place(x=x_pos, y=y_pos, anchor="nw", width=width)
+        frame.pack_propagate(0)
 
     def onStartClick(self):
         settings = self.getSettings()
@@ -129,7 +166,6 @@ class App:
             status = convert(settings)
             if status:
                 messagebox.showinfo("Hoàn thành", "Hoàn thành")
-
 
     def validateSettings(self, settings):
         # Check in file
@@ -142,10 +178,10 @@ class App:
             messagebox.showerror("Validation error",
                                  "Hãy chọn đường dẫn output folder")
             return False
-        # Check file level < sheet level
-        if settings["file_level"] >= settings["sheet_level"]:
+        # Check file level <= sheet level
+        if settings["file_level"] > settings["sheet_level"]:
             messagebox.showerror(
-                "Validation error", "Cấu hình file level phải nhỏ hơn sheet level")
+                "Validation error", "Cấu hình cột file level phải nhỏ hơn hoặc bằng cột sheet")
             return False
         return True
 
@@ -156,18 +192,45 @@ class App:
         settings["file_level"] = int(self.file_setting.value.get())
         settings["sheet_level"] = int(self.sheet_setting.value.get())
         settings["sheets"] = {}
-        settings["sheets"]["logic"] = int(self.sheet_logic_setting.value.get())
-        settings["sheets"]["screen"] = int(
-            self.sheet_screen_setting.value.get())
-        settings["sheets"]["authorization"] = int(
-            self.sheet_authorization_setting.value.get())
-        settings["sheets"]["precondition"] = int(
-            self.sheet_precondition_setting.value.get())
-        settings["sheets"]["affection"] = int(
-            self.sheet_affection_setting.value.get())
-        settings["sheets"]["outlier"] = int(
-            self.sheet_outlier_setting.value.get())
-        settings["sheets"]["other"] = int(self.sheet_other_setting.value.get())
+
+        settings["sheets"]["logic"] = {
+            "importance": self.sheet_logic_setting.value_importance.get(),
+            "testType": self.sheet_logic_setting.value_test_type.get(),
+            "priority": int(self.sheet_logic_setting.value_priority.get())
+        }
+
+        settings["sheets"]["screen"] = {
+            "importance": self.sheet_screen_setting.value_importance.get(),
+            "testType": self.sheet_screen_setting.value_test_type.get(),
+            "priority": int(self.sheet_screen_setting.value_priority.get())
+        }
+
+        settings["sheets"]["authorization"] = {
+            "importance": self.sheet_authorization_setting.value_importance.get(),
+            "testType": self.sheet_authorization_setting.value_test_type.get(),
+            "priority": int(self.sheet_authorization_setting.value_priority.get())
+        }
+
+        settings["sheets"]["precondition"] = {
+            "importance": self.sheet_precondition_setting.value_importance.get(),
+            "testType": self.sheet_precondition_setting.value_test_type.get(),
+            "priority": int(self.sheet_precondition_setting.value_priority.get())
+        }
+        settings["sheets"]["affection"] = {
+            "importance": self.sheet_affection_setting.value_importance.get(),
+            "testType": self.sheet_affection_setting.value_test_type.get(),
+            "priority": int(self.sheet_affection_setting.value_priority.get())
+        }
+        settings["sheets"]["outlier"] = {
+            "importance": self.sheet_outlier_setting.value_importance.get(),
+            "testType": self.sheet_outlier_setting.value_test_type.get(),
+            "priority": int(self.sheet_outlier_setting.value_priority.get())
+        }
+        settings["sheets"]["other"] = {
+            "importance": self.sheet_other_setting.value_importance.get(),
+            "testType": self.sheet_other_setting.value_test_type.get(),
+            "priority": int(self.sheet_other_setting.value_priority.get())
+        }
         return settings
 
 

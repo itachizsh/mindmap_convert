@@ -12,25 +12,41 @@ def genDataRow(in_data, settings):
     sheet_conf = conf["ui"]["settings"]["sheet"]
     data = {}
     data["Type"] = "Manual"
+    data["Status"] = "Done"
+    data["Test Step #"] = 1
     data["Name"] = in_data[-3]
     data["Test Step Description"] = in_data[-2]
     data["Test Step Expected Result"] = in_data[-1]
     data["Chức năng"] = "/".join(in_data[settings["sheet_level"]-1:-3])
 
     if name.lower() == sheet_conf["logic"]["name"].lower():
-        data["Mức độ ưu tiên"] = settings["sheets"]["logic"]
+        data["Mức độ ưu tiên"] = settings["sheets"]["logic"]["priority"]
+        data["Kịch bản trọng yếu"] = settings["sheets"]["logic"]["importance"]
+        data["Loại testcase"] = settings["sheets"]["logic"]["testType"]
     elif name.lower() == sheet_conf["screen"]["name"].lower():
-        data["Mức độ ưu tiên"] = settings["sheets"]["screen"]
+        data["Mức độ ưu tiên"] = settings["sheets"]["screen"]["priority"]
+        data["Kịch bản trọng yếu"] = settings["sheets"]["screen"]["importance"]
+        data["Loại testcase"] = settings["sheets"]["screen"]["testType"]
     elif name.lower() == sheet_conf["authorization"]["name"].lower():
-        data["Mức độ ưu tiên"] = settings["sheets"]["authorization"]
+        data["Mức độ ưu tiên"] = settings["sheets"]["authorization"]["priority"]
+        data["Kịch bản trọng yếu"] = settings["sheets"]["authorization"]["importance"]
+        data["Loại testcase"] = settings["sheets"]["authorization"]["testType"]
     elif name.lower() == sheet_conf["precondition"]["name"].lower():
-        data["Mức độ ưu tiên"] = settings["sheets"]["precondition"]
+        data["Mức độ ưu tiên"] = settings["sheets"]["precondition"]["priority"]
+        data["Kịch bản trọng yếu"] = settings["sheets"]["precondition"]["importance"]
+        data["Loại testcase"] = settings["sheets"]["precondition"]["testType"]
     elif name.lower() == sheet_conf["affection"]["name"].lower():
-        data["Mức độ ưu tiên"] = settings["sheets"]["affection"]
+        data["Mức độ ưu tiên"] = settings["sheets"]["affection"]["priority"]
+        data["Kịch bản trọng yếu"] = settings["sheets"]["affection"]["importance"]
+        data["Loại testcase"] = settings["sheets"]["affection"]["testType"]
     elif name.lower() == sheet_conf["outlier"]["name"].lower():
-        data["Mức độ ưu tiên"] = settings["sheets"]["outlier"]
+        data["Mức độ ưu tiên"] = settings["sheets"]["outlier"]["priority"]
+        data["Kịch bản trọng yếu"] = settings["sheets"]["outlier"]["importance"]
+        data["Loại testcase"] = settings["sheets"]["outlier"]["testType"]
     else:
-        data["Mức độ ưu tiên"] = settings["sheets"]["other"]
+        data["Mức độ ưu tiên"] = settings["sheets"]["other"]["priority"]
+        data["Kịch bản trọng yếu"] = settings["sheets"]["other"]["importance"]
+        data["Loại testcase"] = settings["sheets"]["other"]["testType"]
     return data
 
 
