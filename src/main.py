@@ -112,7 +112,7 @@ class App:
             options=setting_conf["sheet"]["other"]["values"],
             x_pos=45, y_pos=240, width=600)
         sheet_setting_frame.place(
-            x=0, y=270, anchor="nw", width=width, height=240)
+            x=0, y=270, anchor="nw", width=width, height=270)
         sheet_setting_frame.pack_propagate(0)
 
         # --------------------Start----------------------
