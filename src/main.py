@@ -54,7 +54,13 @@ class App:
             default_value=setting_conf["sheet"]["defaultValue"],
             options=setting_conf["sheet"]["values"],
             x_pos=120, y_pos=60, width=400)
-        setting_frame.place(x=0, y=150, anchor="nw", width=width, height=110)
+        self.type_setting = LevelSettingComponent(
+            root=setting_frame,
+            label_text="Chọn loại test type: ",
+            default_value=setting_conf["type"]["defaultValue"],
+            options=setting_conf["type"]["values"],
+            x_pos=120, y_pos=90, width=400)
+        setting_frame.place(x=0, y=150, anchor="nw", width=width, height=120)
         setting_frame.pack_propagate(0)
 
         # ----------------Sheet Settings-----------------
@@ -120,7 +126,7 @@ class App:
         start_button = tk.Button(root,
                                  font=ft,
                                  bg="#f0f0f0",
-                                 fg="#000000",
+                                 fg="#000000",  
                                  justify="center")
         start_button["text"] = "Start"
         start_button.place(x=315, y=560, width=70, height=30)
@@ -191,6 +197,7 @@ class App:
         settings["out_path"] = self.output_path.path
         settings["file_level"] = int(self.file_setting.value.get())
         settings["sheet_level"] = int(self.sheet_setting.value.get())
+        settings["type"] = int(self.type_setting.value.get())
         settings["sheets"] = {}
 
         settings["sheets"]["logic"] = {

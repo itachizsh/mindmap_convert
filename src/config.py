@@ -98,6 +98,10 @@ conf = {
                         "priority": 3
                     },
                 }
+            },
+            "type":{
+                "values": [2, 3],
+                "defaultValue": 3
             }
         }
     }

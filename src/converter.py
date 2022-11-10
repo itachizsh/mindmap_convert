@@ -14,10 +14,16 @@ def genDataRow(in_data, settings):
     data["Type"] = "Manual"
     data["Status"] = "Done"
     data["Test Step #"] = 1
-    data["Name"] = in_data[-3]
-    data["Test Step Description"] = in_data[-2]
-    data["Test Step Expected Result"] = in_data[-1]
-    data["Chức năng"] = "/".join(in_data[settings["sheet_level"]-1:-3])
+    if settings["type"]==3:
+        data["Name"] = in_data[-3]
+        data["Test Step Description"] = in_data[-2]
+        data["Test Step Expected Result"] = in_data[-1]
+        data["Chức năng"] = "/".join(in_data[settings["sheet_level"]-1:-3])
+    elif settings["type"]==3:
+        data["Name"] = in_data[-2]
+        data["Test Step Expected Result"] = in_data[-1]
+        data["Chức năng"] = "/".join(in_data[settings["sheet_level"]-1:-2])
+
 
     if name.lower() == sheet_conf["logic"]["name"].lower():
         data["Mức độ ưu tiên"] = settings["sheets"]["logic"]["priority"]
