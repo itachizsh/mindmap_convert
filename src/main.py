@@ -5,6 +5,8 @@ from tkinter import messagebox
 from components.ChooseFolderComponent import ChooseFolderComponent
 from components.SettingComponent import SettingComponent
 from components.LevelSettingComponent import LevelSettingComponent
+from components.TestCaseTypeComponent import TestCaseTypeComponent
+from components.FunctionSettingComponent import FunctionSettingComponent
 from converter import convert
 from config import conf
 
@@ -16,7 +18,7 @@ class App:
         root.title("Mindmap converter")
         # setting window size
         width = 700
-        height = 600
+        height = 700
         screenwidth = root.winfo_screenwidth()
         screenheight = root.winfo_screenheight()
         alignstr = '%dx%d+%d+%d' % (width, height,
@@ -25,49 +27,54 @@ class App:
         root.resizable(width=False, height=False)
 
         ft = tkFont.Font(family='Times', size=10)
+        ft_header = tkFont.Font(family='Times', size=10, weight='bold')
 
         # Upload file
         self.upload_path = ChooseFolderComponent(
-            root, component_type="excel", label_text="Upload file", button_text="Choose", y_pos=40)
+            root, component_type="excel", label_text="Upload file", button_text="Chọn", y_pos=40)
 
         # Download file destination
         self.output_path = ChooseFolderComponent(
-            root, component_type="folder", label_text="Output folder", button_text="Choose", y_pos=90)
+            root, component_type="folder", label_text="Output folder", button_text="Chọn", y_pos=90)
 
         # -------------------Settings--------------------
         setting_frame = tk.Frame(root)
 
-        setting_label = tk.Label(setting_frame, anchor="w", font=ft)
+        setting_label = tk.Label(setting_frame, anchor="w", font=ft_header)
         setting_label["text"] = "Cấu hình"
         setting_label.place(x=20, y=0, anchor="nw")
 
         self.file_setting = LevelSettingComponent(
             root=setting_frame,
-            label_text="Cấu hình file - chọn cột",
+            label_text="File - chọn cột",
             default_value=setting_conf["file"]["defaultValue"],
             options=setting_conf["file"]["values"],
-            x_pos=120, y_pos=30, width=400)
+            x_pos=120, y_pos=30, width=200)
 
         self.sheet_setting = LevelSettingComponent(
             root=setting_frame,
-            label_text="Cấu hình sheet - chọn cột",
+            label_text="Sheet - chọn cột",
             default_value=setting_conf["sheet"]["defaultValue"],
             options=setting_conf["sheet"]["values"],
-            x_pos=120, y_pos=60, width=400)
-        self.type_setting = LevelSettingComponent(
+            x_pos=120, y_pos=60, width=200)
+        self.type_setting = TestCaseTypeComponent(
             root=setting_frame,
-            label_text="Chọn loại test type: ",
+            label_text="Xuất test case loại",
             default_value=setting_conf["type"]["defaultValue"],
-            options=setting_conf["type"]["values"],
-            x_pos=120, y_pos=90, width=400)
-        setting_frame.place(x=0, y=150, anchor="nw", width=width, height=120)
+            x_pos=120, y_pos=100, width=400)
+        self.function_setting = FunctionSettingComponent(
+            root=setting_frame,
+            label_text="Cột chức năng",
+            x_pos=120, y_pos=150, width=405)
+
+        setting_frame.place(x=0, y=140, anchor="nw", width=width, height=240)
         setting_frame.pack_propagate(0)
 
         # ----------------Sheet Settings-----------------
         sheet_setting_frame = tk.Frame(root)
 
         sheet_setting_label = tk.Label(
-            sheet_setting_frame, anchor="w", font=ft)
+            sheet_setting_frame, anchor="w", font=ft_header)
         sheet_setting_label["text"] = "Cấu hình mức độ ưu tiên cho sheet"
         sheet_setting_label.place(x=20, y=0, anchor="nw")
 
@@ -118,7 +125,7 @@ class App:
             options=setting_conf["sheet"]["other"]["values"],
             x_pos=45, y_pos=240, width=600)
         sheet_setting_frame.place(
-            x=0, y=270, anchor="nw", width=width, height=270)
+            x=0, y=360, anchor="nw", width=width, height=270)
         sheet_setting_frame.pack_propagate(0)
 
         # --------------------Start----------------------
@@ -126,10 +133,10 @@ class App:
         start_button = tk.Button(root,
                                  font=ft,
                                  bg="#f0f0f0",
-                                 fg="#000000",  
+                                 fg="#000000",
                                  justify="center")
         start_button["text"] = "Start"
-        start_button.place(x=315, y=560, width=70, height=30)
+        start_button.place(x=315, y=650, width=70, height=30)
         start_button["command"] = self.onStartClick
 
     def genSheetHeader(self, root, x_pos=0, y_pos=0, width=350):
@@ -169,9 +176,10 @@ class App:
     def onStartClick(self):
         settings = self.getSettings()
         if self.validateSettings(settings):
-            status = convert(settings)
-            if status:
-                messagebox.showinfo("Hoàn thành", "Hoàn thành")
+            # status = convert(settings)
+            # if status:
+            # messagebox.showinfo("Hoàn thành", "Hoàn thành")
+            pass
 
     def validateSettings(self, settings):
         # Check in file
@@ -189,6 +197,26 @@ class App:
             messagebox.showerror(
                 "Validation error", "Cấu hình cột file level phải nhỏ hơn hoặc bằng cột sheet")
             return False
+
+        # Check function rows custom
+        if not self.validateFunctionSettings(settings):
+            return False
+
+        return True
+
+    def validateFunctionSettings(self, settings):
+        if settings["function"]["type"] == 'default':
+            return True
+
+        if settings["function"]["start"] < settings["sheet_level"]:
+            messagebox.showerror(
+                "Validation error", "Cấu hình cột bắt đầu chức năng phải lớn hơn hoặc bằng cột sheet")
+            return False
+
+        if settings["function"]["start"] > settings["function"]["end"]:
+            messagebox.showerror(
+                "Validation error", "Cấu hình cột bắt đầu chức năng phải lớn hơn hoặc bằng cột kết thúc chức năng")
+            return False
         return True
 
     def getSettings(self):
@@ -197,7 +225,11 @@ class App:
         settings["out_path"] = self.output_path.path
         settings["file_level"] = int(self.file_setting.value.get())
         settings["sheet_level"] = int(self.sheet_setting.value.get())
-        settings["type"] = int(self.type_setting.value.get())
+        settings["test_case_type"] = int(self.type_setting.value.get())
+        settings["function"] = {}
+        settings["function"]["type"] = self.function_setting.value.get()
+        settings["function"]["start"] = self.function_setting.value_custom_start.get()
+        settings["function"]["end"] = self.function_setting.value_custom_end.get()
         settings["sheets"] = {}
 
         settings["sheets"]["logic"] = {

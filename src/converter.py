@@ -14,7 +14,7 @@ def genDataRow(in_data, settings):
     data["Type"] = "Manual"
     data["Status"] = "Done"
     data["Test Step #"] = 1
-    if settings["type"]==3:
+    if settings["test_case_type"]==3:
         data["Name"] = in_data[-3]
         data["Test Step Description"] = in_data[-2]
         data["Test Step Expected Result"] = in_data[-1]

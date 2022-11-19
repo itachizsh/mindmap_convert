@@ -10,9 +10,10 @@ class ChooseFolderComponent:
         self.path = path
 
         ft = tkFont.Font(family='Times', size=10)
+        ft_header = tkFont.Font(family='Times', size=10, weight='bold')
 
         label = tk.Label(root)
-        label["font"] = ft
+        label["font"] = ft_header
         label["fg"] = "#333333"
         label["anchor"] = "w"
         label["text"] = label_text
