@@ -176,10 +176,9 @@ class App:
     def onStartClick(self):
         settings = self.getSettings()
         if self.validateSettings(settings):
-            # status = convert(settings)
-            # if status:
-            # messagebox.showinfo("Hoàn thành", "Hoàn thành")
-            pass
+            status = convert(settings)
+            if status:
+                messagebox.showinfo("Hoàn thành", "Hoàn thành")
 
     def validateSettings(self, settings):
         # Check in file

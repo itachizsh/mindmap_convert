@@ -14,16 +14,23 @@ def genDataRow(in_data, settings):
     data["Type"] = "Manual"
     data["Status"] = "Done"
     data["Test Step #"] = 1
-    if settings["test_case_type"]==3:
+    if settings["test_case_type"] == 3:
         data["Name"] = in_data[-3]
         data["Test Step Description"] = in_data[-2]
         data["Test Step Expected Result"] = in_data[-1]
-        data["Chức năng"] = "/".join(in_data[settings["sheet_level"]-1:-3])
-    elif settings["type"]==3:
+        if settings["function"]["type"] == "default":
+            data["Chức năng"] = "/".join(in_data[settings["sheet_level"]-1:-3])
+        else:
+            data["Chức năng"] = "/".join(in_data[settings["function"]
+                                         ["start"]:settings["function"]["end"]])
+    elif settings["test_case_type"] == 2:
         data["Name"] = in_data[-2]
         data["Test Step Expected Result"] = in_data[-1]
-        data["Chức năng"] = "/".join(in_data[settings["sheet_level"]-1:-2])
-
+        if settings["function"]["type"] == "default":
+            data["Chức năng"] = "/".join(in_data[settings["sheet_level"]-1:-2])
+        else:
+            data["Chức năng"] = "/".join(in_data[settings["function"]
+                                         ["start"]:settings["function"]["end"]])
 
     if name.lower() == sheet_conf["logic"]["name"].lower():
         data["Mức độ ưu tiên"] = settings["sheets"]["logic"]["priority"]
@@ -57,7 +64,7 @@ def genDataRow(in_data, settings):
 
 
 def processSheet(rows, settings):
-    df = pd.DataFrame(columns=["Name", "Id", "Attachments", "Status", "Type", "Test Step #", "Test Step Description",
+    df = pd.DataFrame(columns=["Name", "Id", "Attachments", "Status", "Type", "Test Step #", "Tiền điều kiện", "Test Step Description",
                                        "Test Step Expected Result", "Chức năng", "Mức độ ưu tiên", "Smoke test", "Kịch bản trọng yếu", "Loại testcase", "Testcase SIT/UAT"])
 
     for row in rows:
