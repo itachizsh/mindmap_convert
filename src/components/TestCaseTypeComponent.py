@@ -21,11 +21,11 @@ class TestCaseTypeComponent:
         # initial menu text
 
         r1 = tk.Radiobutton(
-            frame, text="2 bước [Tên TC - Kết quả ]", variable=self.value, value=2)
+            frame, text="Tên testcase - Kết quả mong muốn", variable=self.value, value=2)
         r1.grid(sticky="w", column=1, row=0)
 
         r2 = tk.Radiobutton(
-            frame, text="3 bước [Tên TC - Các bước thực hiện - Kết quả]", variable=self.value, value=3)
+            frame, text="Tên testcase - Các bước thực hiện - Kết quả mong muốn", variable=self.value, value=3)
         r2.grid(sticky="w", column=1, row=1)
 
         self.value.set(default_value)

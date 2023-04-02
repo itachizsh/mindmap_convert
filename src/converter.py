@@ -18,6 +18,7 @@ def genDataRow(in_data, settings):
         data["Name"] = in_data[-3]
         data["Test Step Description"] = in_data[-2]
         data["Test Step Expected Result"] = in_data[-1]
+
         if settings["function"]["type"] == "default":
             data["Chức năng"] = "/".join(in_data[settings["sheet_level"]-1:-3])
         else:
@@ -63,13 +64,14 @@ def genDataRow(in_data, settings):
     return data
 
 
-def processSheet(rows, settings):
+def processSheet( rows, settings):
     df = pd.DataFrame(columns=["Name", "Id", "Attachments", "Status", "Type", "Test Step #", "Tiền điều kiện", "Test Step Description",
                                        "Test Step Expected Result", "Chức năng", "Mức độ ưu tiên", "Smoke test", "Kịch bản trọng yếu", "Loại testcase", "Testcase SIT/UAT"])
 
     for row in rows:
         df = pd.concat(
             [df, pd.DataFrame.from_records([genDataRow(row, settings)])])
+
     return df
 
 
@@ -81,7 +83,7 @@ def processFile(rows, file_name, settings):
         entries.append(rows[i])
         if i == len(rows)-1 or rows[i][settings["sheet_level"]-1] != rows[i + 1][settings["sheet_level"]-1]:
             # Check same sheet name then create new name
-            name = rows[i][settings["sheet_level"]-1][:25]
+            name = rows[i][settings["sheet_level"]-1][:30]
             if name in sheet_names.keys():
                 name = "{}-{}".format(name, sheet_names[name])
             sheet_names[name] = sheet_names.get(name, 0) + 1
@@ -95,17 +97,28 @@ def processFile(rows, file_name, settings):
     writer = pd.ExcelWriter(os.path.join(
         settings['out_path'], '{}.xlsx'.format(file_name)), engine='xlsxwriter')
     for sheet in sheets:
+        testcase_name_list = sheet["df"]["Name"].to_list()
+        chuc_nang_list = sheet["df"]["Chức năng"].to_list()
+        for i in range(len(testcase_name_list)):
+            suffix = 1
+            for j in range(i+1, len(testcase_name_list)):
+                if testcase_name_list[i] == testcase_name_list[j] and chuc_nang_list[i] == chuc_nang_list[j]:
+                    testcase_name_list[j] = "{}-{}".format(testcase_name_list[j], suffix)
+                    suffix = suffix + 1
+
+        sheet["df"]["Name"] = testcase_name_list
         sheet['df'].to_excel(writer, sheet_name=sheet['name'], index=False)
     writer.save()
     writer.close()
 
 
+
 def convert(settings):
     try:
         df = pd.read_excel(settings["in_path"], header=None)
-        if len(df.columns) < 5:
+        if len(df.columns) < 3:
             messagebox.showerror(
-                "Validation error", "Số cột của file nhỏ hơn 5 (cột file, cột sheet, tên case test, bước thực hiện, mong muốn)")
+                "Validation error", "Số cột của file nhỏ hơn 3 (tên testcase, các bước thực hiện, kết quả mong muốn)")
             return False
 
         if len(df.columns) <= settings["sheet_level"]:
@@ -135,7 +148,6 @@ def convert(settings):
                         cur_row[i] = prev_row[i]
 
             cur_row = cur_row[:last_index + 1]
-
             prev_row = cur_row
             entries.append(cur_row)
 
@@ -148,9 +160,13 @@ def convert(settings):
             processFile(copy.deepcopy(entries),
                         name, settings)
 
+
     except Exception as e:
-        messagebox.showerror("Error", "{}\nStack trace:\n{}".format(
-            str(e), traceback.format_exc()))
+        messagebox.showerror("Error", "Kiểm tra fileupload: \n"
+                                              "1-Đã save as đủ 2 lần chưa? \n"
+                                              "2-Có dòng nào bị thiếu bước không? \n"
+                                      + "{}\nStack trace:\n{}".format(
+            str(e), traceback.format_exc()) )
         return False
     return True
 

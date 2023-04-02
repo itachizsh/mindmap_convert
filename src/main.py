@@ -46,26 +46,26 @@ class App:
 
         self.file_setting = LevelSettingComponent(
             root=setting_frame,
-            label_text="File - chọn cột",
+            label_text="File - chọn cột thứ",
             default_value=setting_conf["file"]["defaultValue"],
             options=setting_conf["file"]["values"],
             x_pos=120, y_pos=30, width=200)
 
         self.sheet_setting = LevelSettingComponent(
             root=setting_frame,
-            label_text="Sheet - chọn cột",
+            label_text="Sheet - chọn cột thứ",
             default_value=setting_conf["sheet"]["defaultValue"],
             options=setting_conf["sheet"]["values"],
             x_pos=120, y_pos=60, width=200)
         self.type_setting = TestCaseTypeComponent(
             root=setting_frame,
-            label_text="Xuất test case loại",
+            label_text="Chọn test case gồm",
             default_value=setting_conf["type"]["defaultValue"],
-            x_pos=120, y_pos=100, width=400)
+            x_pos=120, y_pos=100, width=455)
         self.function_setting = FunctionSettingComponent(
             root=setting_frame,
             label_text="Cột chức năng",
-            x_pos=120, y_pos=150, width=405)
+            x_pos=120, y_pos=150, width=410)
 
         setting_frame.place(x=0, y=140, anchor="nw", width=width, height=240)
         setting_frame.pack_propagate(0)
@@ -75,7 +75,7 @@ class App:
 
         sheet_setting_label = tk.Label(
             sheet_setting_frame, anchor="w", font=ft_header)
-        sheet_setting_label["text"] = "Cấu hình mức độ ưu tiên cho sheet"
+        sheet_setting_label["text"] = "Cấu hình testcase theo sheet"
         sheet_setting_label.place(x=20, y=0, anchor="nw")
 
         self.genSheetHeader(sheet_setting_frame, x_pos=45, y_pos=30, width=600)
@@ -149,7 +149,7 @@ class App:
         label = tk.Label(frame, font='Times 10 bold', width=22)
         label["fg"] = "#333333"
         label["anchor"] = "w"
-        label["text"] = "Cấu hình theo sheet"
+        label["text"] = "Sheet"
         label.grid(sticky="w", column=0, row=0)
 
         label = tk.Label(frame, font='Times 10 bold', width=15)
