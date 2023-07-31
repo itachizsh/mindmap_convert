@@ -161,6 +161,13 @@ def convert(settings):
                         name, settings)
 
 
+        for file_name in file_names:
+            df_excel = pd.read_excel(os.path.join(settings['out_path'], '{}.xlsx'.format(file_name)))
+            csv_file_name = '{}.csv'.format(file_name)
+            csv_file_path = os.path.join(settings['out_path'], csv_file_name)
+            df_excel.to_csv(csv_file_path, index=False)
+
+
     except Exception as e:
         messagebox.showerror("Error", "Kiểm tra fileupload: \n"
                                               "1-Đã save as đủ 2 lần chưa? \n"
