@@ -37,7 +37,7 @@ def genDataRow(in_data, settings):
         data["Mức độ ưu tiên"] = settings["sheets"]["logic"]["priority"]
         data["Kịch bản trọng yếu"] = settings["sheets"]["logic"]["importance"]
         data["Loại testcase"] = settings["sheets"]["logic"]["testType"]
-    elif name.lower() == sheet_conf["screen"]["name"].lower() or sheet_conf["screen"]["name"].lower() in data["Chức năng"].lower() :
+    elif name.lower() == sheet_conf["screen"]["name"].lower() or sheet_conf["screen"]["name"].lower() in data["Chức năng"].lower():
         data["Mức độ ưu tiên"] = settings["sheets"]["screen"]["priority"]
         data["Kịch bản trọng yếu"] = settings["sheets"]["screen"]["importance"]
         data["Loại testcase"] = settings["sheets"]["screen"]["testType"]
@@ -64,7 +64,7 @@ def genDataRow(in_data, settings):
     return data
 
 
-def processSheet( rows, settings):
+def processSheet(rows, settings):
     df = pd.DataFrame(columns=["Name", "Id", "Attachments", "Status", "Type", "Test Step #", "Tiền điều kiện", "Test Step Description",
                                        "Test Step Expected Result", "Chức năng", "Mức độ ưu tiên", "Smoke test", "Kịch bản trọng yếu", "Loại testcase", "Testcase SIT/UAT"])
 
@@ -103,14 +103,14 @@ def processFile(rows, file_name, settings):
             suffix = 1
             for j in range(i+1, len(testcase_name_list)):
                 if testcase_name_list[i] == testcase_name_list[j] and chuc_nang_list[i] == chuc_nang_list[j]:
-                    testcase_name_list[j] = "{}-{}".format(testcase_name_list[j], suffix)
+                    testcase_name_list[j] = "{}-{}".format(
+                        testcase_name_list[j], suffix)
                     suffix = suffix + 1
 
         sheet["df"]["Name"] = testcase_name_list
         sheet['df'].to_excel(writer, sheet_name=sheet['name'], index=False)
     writer.save()
     writer.close()
-
 
 
 def convert(settings):
@@ -160,20 +160,26 @@ def convert(settings):
             processFile(copy.deepcopy(entries),
                         name, settings)
 
-
         for file_name in file_names:
-            df_excel = pd.read_excel(os.path.join(settings['out_path'], '{}.xlsx'.format(file_name)))
-            csv_file_name = '{}.csv'.format(file_name)
-            csv_file_path = os.path.join(settings['out_path'], csv_file_name)
-            df_excel.to_csv(csv_file_path, index=False)
+            df_excel = pd.ExcelFile(os.path.join(
+                settings['out_path'], '{}.xlsx'.format(file_name)))
+            sheet_names = df_excel.sheet_names  # Lấy danh sách tất cả các sheet
 
+            for sheet_name in sheet_names:
+                df_sheet = df_excel.parse(sheet_name)
+
+                csv_file_name = '{}_{}.csv'.format(file_name, sheet_name)
+                csv_file_path = os.path.join(
+                    settings['out_path'], csv_file_name)
+
+                df_sheet.to_csv(csv_file_path, index=False)
 
     except Exception as e:
         messagebox.showerror("Error", "Kiểm tra fileupload: \n"
-                                              "1-Đã save as đủ 2 lần chưa? \n"
-                                              "2-Có dòng nào bị thiếu bước không? \n"
+                             "1-Đã save as đủ 2 lần chưa? \n"
+                             "2-Có dòng nào bị thiếu bước không? \n"
                                       + "{}\nStack trace:\n{}".format(
-            str(e), traceback.format_exc()) )
+                                          str(e), traceback.format_exc()))
         return False
     return True
 
